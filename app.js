@@ -124,3 +124,113 @@ for (let k = 0; k < 8; k++) {
     bulbs.appendChild(b);
   });
 }
+
+// Background music: Jingle Bells (public domain) on a little music-box synth.
+// Browsers block autoplay with sound, so it starts from the button.
+const musicBtn = $("#music-btn");
+const BEAT = 0.32;
+const MELODY = [ // [midi note, beats]
+  [76,1],[76,1],[76,2], [76,1],[76,1],[76,2], [76,1],[79,1],[72,1.5],[74,0.5], [76,4],
+  [77,1],[77,1],[77,1.5],[77,0.5], [77,1],[76,1],[76,1],[76,0.5],[76,0.5], [76,1],[74,1],[74,1],[76,1], [74,2],[79,2],
+  [76,1],[76,1],[76,2], [76,1],[76,1],[76,2], [76,1],[79,1],[72,1.5],[74,0.5], [76,4],
+  [77,1],[77,1],[77,1.5],[77,0.5], [77,1],[76,1],[76,1],[76,0.5],[76,0.5], [79,1],[79,1],[77,1],[74,1], [72,4],
+];
+const BASS = [48,48,48,48, 53,48,55,55, 48,48,48,48, 53,48,55,48]; // one root per bar
+const midiHz = (m) => 440 * 2 ** ((m - 69) / 12);
+let audio = null;
+
+function bell(t, hz, dur, vol) {
+  const { ctx, out } = audio;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  g.connect(out);
+  [[1, 1], [2, 0.3], [3, 0.1]].forEach(([mult, level]) => {
+    const o = ctx.createOscillator();
+    const og = ctx.createGain();
+    o.frequency.value = hz * mult;
+    og.gain.value = level;
+    o.connect(og).connect(g);
+    o.start(t);
+    o.stop(t + dur);
+  });
+}
+
+function sleighBell(t) {
+  const { ctx, out, noise } = audio;
+  const src = ctx.createBufferSource();
+  const hp = ctx.createBiquadFilter();
+  const g = ctx.createGain();
+  src.buffer = noise;
+  hp.type = "highpass";
+  hp.frequency.value = 7000;
+  g.gain.setValueAtTime(0.06, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+  src.connect(hp).connect(g).connect(out);
+  src.start(t);
+  src.stop(t + 0.15);
+}
+
+function scheduleSong(start) {
+  let t = start;
+  for (const [m, beats] of MELODY) {
+    bell(t, midiHz(m), beats * BEAT + 0.6, 0.18);
+    t += beats * BEAT;
+  }
+  BASS.forEach((root, i) => {
+    const bar = start + i * 4 * BEAT;
+    bell(bar, midiHz(root), 1.2, 0.12);
+    bell(bar + 2 * BEAT, midiHz(root + 7), 1.2, 0.08);
+    sleighBell(bar + BEAT);
+    sleighBell(bar + 3 * BEAT);
+  });
+  return t;
+}
+
+function syncMusicBtn() {
+  const playing = audio.ctx.state === "running";
+  musicBtn.setAttribute("aria-pressed", String(playing));
+  musicBtn.textContent = playing ? "♪ Pause music" : "♪ Play music";
+}
+
+// Start playing on load. Most browsers keep the audio suspended until the visitor
+// interacts, so we also start it on their first tap/click/keypress anywhere.
+{
+  const ctx = new AudioContext();
+  const out = ctx.createGain();
+  out.gain.value = 0.6;
+  out.connect(ctx.destination);
+  const noise = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+  noise.getChannelData(0).forEach((_, i, d) => { d[i] = Math.random() * 2 - 1; });
+  audio = { ctx, out, noise, userPaused: false };
+  // Queue the song once the browser lets audio run, then each loop shortly before the last ends
+  setInterval(() => {
+    if (audio.end && ctx.currentTime > audio.end - 2) audio.end = scheduleSong(audio.end);
+  }, 500);
+  ctx.onstatechange = () => {
+    if (ctx.state === "running" && !audio.end) audio.end = scheduleSong(ctx.currentTime + 0.1);
+    syncMusicBtn();
+  };
+  ctx.resume().catch(() => {});
+  syncMusicBtn();
+
+  const events = ["pointerdown", "touchend", "keydown"];
+  const startOnInteraction = (e) => {
+    if (e.target.closest?.("#music-btn")) return; // the button handles itself
+    events.forEach((ev) => document.removeEventListener(ev, startOnInteraction, true));
+    if (!audio.userPaused) ctx.resume();
+  };
+  events.forEach((ev) => document.addEventListener(ev, startOnInteraction, true));
+}
+
+musicBtn.addEventListener("click", async () => {
+  if (audio.ctx.state === "running") {
+    audio.userPaused = true;
+    await audio.ctx.suspend();
+  } else {
+    audio.userPaused = false;
+    await audio.ctx.resume();
+  }
+  syncMusicBtn();
+});
