@@ -191,7 +191,7 @@ function scheduleSong(start) {
 function syncMusicBtn() {
   const playing = audio.ctx.state === "running";
   musicBtn.setAttribute("aria-pressed", String(playing));
-  musicBtn.textContent = playing ? "♪ Pause music" : "♪ Play music";
+  musicBtn.textContent = playing ? "Stop music" : "Play music";
 }
 
 // Start playing on load. Most browsers keep the audio suspended until the visitor
@@ -233,4 +233,11 @@ musicBtn.addEventListener("click", async () => {
     await audio.ctx.resume();
   }
   syncMusicBtn();
+});
+
+// Welcome screen: entering counts as the interaction that lets the music start
+$("#enter-btn").addEventListener("click", () => {
+  audio.userPaused = false;
+  audio.ctx.resume();
+  $("#welcome").classList.add("gone");
 });

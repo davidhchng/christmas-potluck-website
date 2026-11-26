@@ -12,6 +12,18 @@
 <body>
   <div class="snow" aria-hidden="true"></div>
 
+  <div id="welcome" class="welcome" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="welcome-inner">
+      <p class="welcome-kicker">You're invited</p>
+      <h2 id="welcome-title" class="welcome-title">Housewarming Potluck</h2>
+      <p class="welcome-when"><span data-event="date"></span> · <span data-event="time"></span></p>
+      <p class="welcome-host">Hosted by J.J.J.D.D.E</p>
+      <button id="enter-btn" class="enter-btn" type="button">Proceed</button>
+    </div>
+  </div>
+
+  <button id="music-btn" class="music-btn" type="button" aria-pressed="false">Play music</button>
+
   <div id="demo-banner" class="demo-banner" hidden>
     Demo mode: entries only save in this browser. See README to share with everyone.
   </div>
@@ -117,8 +129,6 @@
       </g>
     </svg>
   </div>
-
-  <button id="music-btn" class="music-btn" type="button" aria-pressed="false">♪ Play music</button>
 
   <script type="module" src="app.js"></script>
 </body>
