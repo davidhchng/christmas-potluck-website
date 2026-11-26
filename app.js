@@ -24,17 +24,22 @@ const removeBtn = (col, item) =>
     : "";
 
 function renderGuests(rsvps) {
-  const order = { yes: 0, maybe: 1, no: 2 };
-  const sorted = [...rsvps].sort((a, b) => order[a.status] - order[b.status] || a.created - b.created);
-  $("#guest-count").textContent = `(${rsvps.filter((r) => r.status === "yes").length} going)`;
-  $("#guest-list").innerHTML = sorted.length
-    ? sorted
-        .map(
-          (r) => `<li><span class="name">${esc(r.name)}</span>
-            <span class="pill ${esc(r.status)}">${STATUS_LABEL[r.status] ?? ""}</span>${removeBtn("rsvps", r)}</li>`,
-        )
-        .join("")
-    : `<li class="empty">No RSVPs yet.</li>`;
+  const byStatus = (status) => rsvps.filter((r) => r.status === status).sort((a, b) => a.created - b.created);
+  const items = (list) =>
+    list.map((r) => `<li><span class="name">${esc(r.name)}</span>${removeBtn("rsvps", r)}</li>`).join("");
+
+  const going = byStatus("yes");
+  $("#guest-count").textContent = `(${going.length})`;
+  $("#guest-list").innerHTML = going.length ? items(going) : `<li class="empty">No one yet.</li>`;
+  // Maybe and Can't go get their own sections below, only when someone's in them
+  $("#other-guests").innerHTML = ["maybe", "no"]
+    .map((status) => {
+      const list = byStatus(status);
+      return list.length
+        ? `<h3>${STATUS_LABEL[status]} <span class="count">(${list.length})</span></h3><ul class="list">${items(list)}</ul>`
+        : "";
+    })
+    .join("");
   $("#rsvp-submit").textContent = rsvps.some((r) => r.owner === OWNER) ? "Update RSVP" : "RSVP";
 }
 
