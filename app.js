@@ -112,3 +112,15 @@ for (let i = 0; i < 40; i++) {
     animation-delay:${-Math.random() * 30}s; --y:${Math.random() * 100}vh;`;
   snow.appendChild(f);
 }
+
+// String lights: 3 bulbs per scallop of the wire (8 scallops, y = 8 + 60u(1-u))
+const bulbs = $(".bulbs");
+const colors = ["#d9434c", "#e3b75a", "#6cc3a5", "#f2d3c0"];
+for (let k = 0; k < 8; k++) {
+  [0.25, 0.5, 0.75].forEach((u, j) => {
+    const b = document.createElement("li");
+    b.style.cssText = `left:${((k + u) / 8) * 100}%; top:${8 + 60 * u * (1 - u)}px;
+      --c:${colors[(k * 3 + j) % colors.length]}; animation-delay:${-Math.random() * 3}s;`;
+    bulbs.appendChild(b);
+  });
+}

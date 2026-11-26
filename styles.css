@@ -24,6 +24,17 @@ body {
 }
 [hidden] { display: none !important; }
 
+/* Faded photo background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(30, 43, 40, 0.78), rgba(30, 43, 40, 0.78)),
+    url("assets/background.jpg") center 70% / cover no-repeat;
+}
+
 /* Snow */
 .snow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 .flake { position: absolute; top: -10px; border-radius: 50%; background: #fff; animation: fall linear infinite; }
@@ -99,7 +110,90 @@ body {
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 20px;
+  position: relative;
 }
+/* Holly sprig on each card's corner */
+.card::after {
+  content: "";
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  width: 54px;
+  height: 40px;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 54 40'%3E%3Cpath d='M27 22 C20 10 8 6 2 10 C6 12 6 16 4 18 C8 18 10 22 9 25 C14 22 22 24 27 22Z' fill='%233f9a7c'/%3E%3Cpath d='M27 22 C34 10 46 6 52 10 C48 12 48 16 50 18 C46 18 44 22 45 25 C40 22 32 24 27 22Z' fill='%23358a6e'/%3E%3Ccircle cx='23' cy='25' r='5' fill='%23d9434c'/%3E%3Ccircle cx='31' cy='25' r='5' fill='%23d9434c'/%3E%3Ccircle cx='27' cy='31' r='5' fill='%23c2363f'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* String lights along the top */
+.lights { position: relative; z-index: 2; height: 40px; pointer-events: none; }
+.lights-wire { position: absolute; inset: 0; width: 100%; height: 60px; }
+.bulbs { list-style: none; margin: 0; padding: 0; }
+.bulbs li {
+  position: absolute;
+  width: 10px;
+  height: 16px;
+  margin-left: -5px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: var(--c);
+  box-shadow: 0 0 10px 2px var(--c);
+  animation: twinkle 3s ease-in-out infinite;
+}
+.bulbs li::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 2px;
+  width: 6px;
+  height: 5px;
+  border-radius: 1px;
+  background: #2c3e38;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 1; box-shadow: 0 0 12px 3px var(--c); }
+  50% { opacity: 0.45; box-shadow: 0 0 2px 0 var(--c); }
+}
+
+/* Hanging ornaments in the hero */
+.ornaments { position: absolute; inset: 0; pointer-events: none; }
+.ornament {
+  position: absolute;
+  top: -40px;
+  width: 2px;
+  background: rgba(246, 239, 230, 0.5);
+  transform-origin: top center;
+  animation: sway 5s ease-in-out infinite alternate;
+}
+.ornament i {
+  position: absolute;
+  bottom: -26px;
+  left: -13px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.7), transparent 30%), var(--oc);
+}
+.ornament i::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 9px;
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+.o1 { left: 18%; height: 70px; --oc: #d9434c; animation-delay: -1s; }
+.o2 { left: 30%; height: 40px; --oc: #e3b75a; animation-delay: -3s; }
+.o3 { right: 28%; height: 55px; --oc: #6cc3a5; animation-delay: -2s; }
+.o4 { right: 17%; height: 85px; --oc: #c2363f; animation-delay: -4s; }
+@keyframes sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+@media (max-width: 600px) {
+  .o2, .o3 { display: none; }
+  .o1 { left: 8%; height: 34px; } .o4 { right: 8%; height: 46px; }
+  .ornament i { width: 22px; height: 22px; left: -10px; bottom: -20px; }
+  .ornament i::before { left: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .bulbs li, .ornament { animation: none; } }
 h2 {
   font-family: var(--display);
   font-style: italic;
