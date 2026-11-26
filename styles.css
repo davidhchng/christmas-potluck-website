@@ -32,7 +32,17 @@ body::before {
   z-index: -1;
   background:
     linear-gradient(rgba(30, 43, 40, 0.78), rgba(30, 43, 40, 0.78)),
-    url("assets/background.jpg") center 70% / cover no-repeat;
+    url("background.jpg") center top / cover no-repeat;
+}
+/* Wide screens: show the whole photo as a centered column that fades out at the sides */
+@media (min-aspect-ratio: 3/4) {
+  body::before {
+    background:
+      linear-gradient(90deg, var(--bg) calc(50% - 27vh), transparent calc(50% - 16vh),
+        transparent calc(50% + 16vh), var(--bg) calc(50% + 27vh)),
+      linear-gradient(rgba(30, 43, 40, 0.72), rgba(30, 43, 40, 0.72)),
+      url("background.jpg") center top / auto 100% no-repeat;
+  }
 }
 
 /* Snow */
