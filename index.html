@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Housewarming Potluck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sansita:ital,wght@1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="snow" aria-hidden="true"></div>
+
+  <div id="demo-banner" class="demo-banner" hidden>
+    Demo mode: entries only save in this browser. See README to share with everyone.
+  </div>
+
+  <header class="hero">
+    <svg class="star star-left" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 4l13 31 33 3-25 22 8 33-29-18-29 18 8-33L4 38l33-3z" fill="#f2d3c0"/></svg>
+    <svg class="star star-right" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 4l13 31 33 3-25 22 8 33-29-18-29 18 8-33L4 38l33-3z" fill="#e3b75a"/></svg>
+    <h1 class="hero-title">Housewarming Potluck</h1>
+    <p class="hero-when"><span data-event="date"></span><span class="sep"> · </span><span data-event="time"></span><span class="sep"> · </span><span data-event="address"></span></p>
+  </header>
+
+  <main class="layout">
+    <div class="forms">
+      <form id="rsvp-form" class="card form" autocomplete="off">
+        <h2>RSVP</h2>
+        <label>Name
+          <input name="name" required maxlength="60" />
+        </label>
+        <div class="radio-row">
+          <label><input type="radio" name="status" value="yes" checked /> Going</label>
+          <label><input type="radio" name="status" value="maybe" /> Maybe</label>
+          <label><input type="radio" name="status" value="no" /> Can't go</label>
+        </div>
+        <button class="btn" type="submit" id="rsvp-submit">RSVP</button>
+        <p class="form-msg" id="rsvp-msg" role="status"></p>
+      </form>
+
+      <form id="food-form" class="card form" autocomplete="off">
+        <h2>Bring Food</h2>
+        <label>Name
+          <input name="name" required maxlength="60" />
+        </label>
+        <label>Category
+          <select name="category" id="category-select" required></select>
+        </label>
+        <label>What are you bringing?
+          <input name="dish" required maxlength="80" />
+        </label>
+        <button class="btn" type="submit">Add</button>
+        <p class="form-msg" id="food-msg" role="status"></p>
+      </form>
+    </div>
+
+    <div class="lists">
+      <section class="card">
+        <h2>Guests <span class="count" id="guest-count"></span></h2>
+        <ul class="list" id="guest-list"></ul>
+      </section>
+      <section class="card">
+        <h2>Food</h2>
+        <div id="food-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="hero-deco" aria-hidden="true">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMax slice">
+      <g stroke="#3f9a7c" stroke-width="7" stroke-linecap="round" fill="none">
+        <path d="M60 200 C70 140 90 100 130 50"/>
+        <path d="M72 170 l-40 -25 M80 145 l-40 -28 M92 120 l-36 -30 M106 95 l-30 -30"/>
+        <path d="M72 170 l38 -30 M80 145 l40 -30 M92 120 l36 -32 M106 95 l30 -30"/>
+      </g>
+      <g fill="#d9434c">
+        <circle cx="150" cy="110" r="8"/><circle cx="510" cy="60" r="9"/><circle cx="555" cy="50" r="9"/>
+        <circle cx="980" cy="70" r="9"/><circle cx="1010" cy="95" r="8"/>
+      </g>
+      <g>
+        <rect x="230" y="125" width="110" height="75" rx="4" fill="#e2545c"/>
+        <rect x="220" y="110" width="130" height="26" rx="4" fill="#f06b72"/>
+        <rect x="275" y="110" width="20" height="90" fill="#3f9a7c"/>
+        <path d="M285 110 C255 72 230 92 250 108 Z M285 110 C315 72 340 92 320 108 Z" fill="#3f9a7c"/>
+      </g>
+      <g stroke="#3f9a7c" stroke-width="4" fill="none" stroke-linecap="round">
+        <path d="M530 200 L530 100 M530 130 L510 60 M530 115 L555 50"/>
+        <path d="M970 200 L970 110 M970 140 L980 70 M970 150 L1010 95"/>
+      </g>
+      <g>
+        <path d="M620 200 V110 a35 35 0 0 1 70 0 v10" stroke="#f6efe6" stroke-width="20" fill="none" stroke-linecap="round"/>
+        <path d="M620 200 V110 a35 35 0 0 1 70 0 v10" stroke="#d9434c" stroke-width="20" fill="none" stroke-linecap="round" stroke-dasharray="12 12"/>
+      </g>
+      <g transform="translate(760 60)">
+        <path d="M60 0 a34 34 0 0 1 24 58 h30 a14 14 0 0 1 0 28 h-26 l18 52 a14 14 0 0 1 -26 10 l-20 -40 l-20 40 a14 14 0 0 1 -26 -10 l18 -52 h-26 a14 14 0 0 1 0 -28 h30 a34 34 0 0 1 24 -58z" fill="#c98a54"/>
+        <circle cx="48" cy="28" r="4.5" fill="#fff"/><circle cx="72" cy="28" r="4.5" fill="#fff"/>
+        <path d="M44 42 q16 14 32 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M52 64 l8 6 l8 -6 l-8 -6 z" fill="#d9434c"/>
+      </g>
+      <g transform="rotate(-8 1130 160)">
+        <rect x="1080" y="120" width="110" height="90" rx="4" fill="#e2545c"/>
+        <rect x="1070" y="105" width="130" height="26" rx="4" fill="#f06b72"/>
+        <rect x="1125" y="105" width="20" height="105" fill="#3f9a7c"/>
+        <path d="M1135 105 C1105 67 1080 87 1100 103 Z M1135 105 C1165 67 1190 87 1170 103 Z" fill="#3f9a7c"/>
+      </g>
+    </svg>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
